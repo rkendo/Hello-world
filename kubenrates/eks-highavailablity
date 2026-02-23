@@ -1,0 +1,19 @@
+I designed a production-grade Kubernetes architecture using Amazon Elastic Kubernetes Service (EKS) focused on High Availability, Scalability, Security, and Observability.
+
+🔹 High Availability
+ Deployed EKS in a multi-AZ Amazon VPC with worker nodes running in private subnets across multiple availability zones, ensuring no single point of failure. Traffic is distributed through an Application Load Balancer for resilient cross-AZ routing.
+
+🔹 Scalability
+ Implemented Horizontal Pod Autoscaler for application scaling and integrated Cluster Autoscaler with Amazon EC2 Auto Scaling to dynamically scale worker nodes during traffic spikes and burst workloads.
+
+🔹 Security
+ • Enforced HTTPS using AWS Certificate Manager
+ • Protected applications with AWS WAF against SQL injection & XSS
+ • Enabled infrastructure protection via AWS Shield
+ • Applied least-privilege access using AWS Identity and Access Management and Kubernetes RBAC
+ • Stored secrets securely in AWS Secrets Manager encrypted with AWS Key Management Service
+
+🔹 Observability
+ Centralized logs and metrics in Amazon CloudWatch, with Prometheus and Grafana dashboards and proactive alerting for performance and failures.
+
+✅ This layered architecture ensures resilience, automatic scaling, strong security posture, and full operational visibility, enabling reliable performance even during high-traffic events.
