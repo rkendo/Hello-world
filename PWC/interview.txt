@@ -1,0 +1,19 @@
+1. A manual change was made to an AWS resource in production causing Terraform drift, and the next terraform apply wants to recreate the resource. How would you reconcile the infrastructure without downtime?
+
+2. Pods in one Kubernetes namespace can communicate internally, but pods in another namespace cannot reach them even though services are exposed. How would you troubleshoot this networking issue?
+
+3. Your CI/CD pipeline successfully builds and deploys a container image, but the Kubernetes deployment keeps pulling the old image version. What could be causing this?
+
+4. Your application is under heavy traffic but Kubernetes HPA is not scaling pods even though CPU usage is above the configured threshold. How would you debug this?
+
+5. Multiple Terraform modules across repositories depend on each other and a deployment fails due to dependency conflicts. How would you design a reliable deployment strategy?
+
+6. New worker nodes are successfully joining an EKS cluster, but pods remain stuck in Pending state. What could be the possible reasons?
+
+7. You need to deploy a new version of a critical microservice in production without any downtime. Which deployment strategies would you implement?
+
+8. A vulnerable dependency was detected in a Docker image after deployment. What steps would you take to mitigate the risk and secure the CI/CD pipeline?
+
+9. Users report intermittent failures across microservices, but logs from individual services look normal. How would you identify the root cause?
+
+10. Your entire production workload runs in a single AWS region, and management asks you to design a multi-region disaster recovery strategy with minimal downtime. How would you approach it?
