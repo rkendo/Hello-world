@@ -1,0 +1,16 @@
+🚀 End-to-End CI/CD & GitOps Deployment on AWS EKS
+Excited to share a cloud-native deployment workflow I implemented for a React + Node.js application using Kubernetes and GitOps principles. This setup enables faster, reliable, and automated application delivery across environments.
+💡 Highlights of the workflow:
+Frontend: React app containerized using Docker
+Backend: Node.js API containerized using Docker
+CI/CD Pipeline: Managed with GitHub, Jenkins, and GitHub Actions
+Container Registry: Amazon ECR for storing Docker images
+Orchestration: Amazon EKS (Kubernetes Cluster)
+GitOps Deployment: Automated via Argo CD
+Database & Backups: MongoDB Atlas and AWS S3
+🛠 Tools Used: GitHub, Jenkins/GitHub Actions, Docker, Argo CD, AWS (EKS, ECR, S3), MongoDB Atlas
+This architecture ensures:
+ ✅ Continuous integration and delivery
+ ✅ Infrastructure as code and version control for deployments
+ ✅ Scalable and maintainable cloud-native applications
+Always happy to discuss cloud-native DevOps practices and GitOps deployments!
