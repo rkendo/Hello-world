@@ -1,0 +1,47 @@
+Performance/
+
+End-to-End Performance Testing and Observability (Kubernetes Eye view) :
+
+To validate system performance, through a comprehensive testing that includes load, stress, spike, soak, scalability, and resilience testing to ensure the application can handle varying traffic conditions and maintain stability over time. These tests help identify performance limit, bottlenecks, and system behavior under both normal and extreme workload. During monitor Metrics across multiple layers, including pod, node, application, and Kubernetes cluster levels. In a microservices architecture which track application metrics, infrastructure metrics, and distributed tracing data to gain deeper insights into system performance and identify potential bottlenecks.
+
+Key Metrics To Monitor High Traffic Cloud Based System (Kubernetes Context)
+1. Pod Level (Detect inefficient containers)
+- CPU / Memory usage 
+- Restarts
+- OOMKills
+- Pod latency
+
+2. Node Level (Detect infrastructure bottlenecks)
+- CPU, Memory, Disk I/O
+- Network I/O
+- Node pressure (disk, memory)
+
+3. Application Level (Detect application bottlenecks)
+- Request latency (p50/p95/p99)
+- Error rate
+- Throughput (RPS)
+- Thread pool usage
+
+4. Kubernetes Level (Detect cluster orchestration issues)
+- HPA scaling events
+- Pod scheduling latency
+- API server latency
+- etcd health
+
+What to Measure in Microservices:
+1. Application Metrics (Tools: Micrometer, Prometheus, Open Telemetry)
+- Request/response time
+- Error rates
+- Business KPIs
+- Dependency latency (DB, cache, APIs)
+
+2. Infrastructure Metrics (Tools: Node Exporter, CloudWatch, Datadog)
+- CPU / Memory
+- Disk I/O
+- Network latency
+
+3. Distributed Metrics (Tools: Jaeger, Zipkin, Open Telemetry)
+- Service-to-service latency
+- Trace spans
+- Request propagation delays
+- Failure hotspots
