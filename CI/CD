@@ -1,0 +1,161 @@
+CI/CD Interview Questions 2026: Jenkins, GitHub Actions, ArgoCD
+CI/CD interviews have evolved — companies now expect you to design and defend complete pipeline architectures, not just write YAML. Here are the questions that determine if you get the offer.
+
+The Pipeline Design Question (Asked in 90% of Senior Interviews)
+"Design a CI/CD pipeline for a containerized microservice that deploys to Kubernetes."
+
+A weak answer describes tools. A strong answer describes a complete flow with security and reliability built in:
+
+1. Developer opens PR
+   → GitHub Actions triggers
+   → Linting + unit tests (parallel)
+   → SAST scan (CodeQL / Semgrep)
+
+2. PR merged to main
+   → Docker image built
+   → Trivy container scan — fail build on HIGH/CRITICAL CVEs
+   → Image pushed to ECR with immutable tag (git SHA)
+   → Integration tests against staging DB
+
+3. Staging deployment
+   → ArgoCD detects new image tag in Helm values
+   → Deploys to staging namespace
+   → Smoke tests run
+   → Performance baseline checked
+
+4. Production deployment
+   → Manual approval gate (required reviewer)
+   → Canary deployment: 5% traffic to new version
+   → Monitor error rate + latency for 10 minutes
+   → Auto-promote if healthy, auto-rollback if SLO breach
+What interviewers look for: Container scanning, immutable tags (not latest), approval gates, and canary + rollback. Most candidates miss at least 2 of these.
+
+GitHub Actions Questions
+1. What is the difference between a job and a step in GitHub Actions?
+Job: A set of steps that run on the same runner (VM). Jobs run in parallel by default. Can be made sequential with needs:.
+
+Step: An individual task within a job. Steps run sequentially within a job and share the same filesystem.
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm test
+
+  build:
+    needs: test        # only runs if test passes
+    runs-on: ubuntu-latest
+    steps:
+      - run: docker build .
+2. How do you share data between jobs in GitHub Actions?
+Jobs run on separate runners — they don't share filesystem. Options:
+
+Artifacts: Upload from one job, download in another
+- uses: actions/upload-artifact@v4
+  with:
+    name: build-output
+    path: dist/
+
+- uses: actions/download-artifact@v4
+  with:
+    name: build-output
+Output variables: Set with echo "VAR=value" >> $GITHUB_OUTPUT, read with needs.job-name.outputs.VAR
+Caching: actions/cache for dependency caches (node_modules, pip, Maven)
+3. How do you handle secrets securely in GitHub Actions?
+Store in GitHub Secrets (Settings → Secrets → Actions)
+Reference as ${{ secrets.MY_SECRET }}
+Secrets are masked in logs
+Never print secrets with echo — GitHub masks them but it's bad practice
+For AWS authentication: Use OIDC instead of long-lived access keys:
+
+- uses: aws-actions/configure-aws-credentials@v4
+  with:
+    role-to-assume: arn:aws:iam::123456789:role/github-actions-role
+    aws-region: us-east-1
+This generates short-lived credentials via IAM role assumption — no AWS keys stored in GitHub at all.
+
+Jenkins Questions
+4. What is the difference between Declarative and Scripted Pipeline?
+Declarative (recommended):
+
+pipeline {
+  agent any
+  stages {
+    stage('Test') {
+      steps {
+        sh 'npm test'
+      }
+    }
+  }
+  post {
+    failure {
+      slackSend message: "Build failed"
+    }
+  }
+}
+Structured, validated by Jenkins before execution. Easier to read. Supports post for cleanup/notification.
+
+Scripted:
+
+node {
+  stage('Test') {
+    sh 'npm test'
+  }
+}
+Full Groovy — more flexible but no structure validation. Harder to maintain.
+
+Use Declarative unless you need dynamic pipeline logic that Declarative can't express.
+
+5. How do you optimise Jenkins build time?
+Parallel stages: Run independent tests simultaneously
+Agent labels: Route builds to appropriately sized agents
+Docker agents: Ephemeral build environments, no dependency conflicts
+Build caching: Cache node_modules, Maven .m2, pip packages in agent workspace
+Incremental builds: Only build changed services in a monorepo (use git diff to detect changes)
+Thin clients: Use Jenkins only for orchestration; delegate heavy work to external systems (Kaniko for Docker builds, external test runners)
+GitOps & ArgoCD Questions
+6. What is GitOps and how is it different from traditional CI/CD?
+Traditional CI/CD: The pipeline pushes changes to the cluster. The pipeline has cluster credentials and runs kubectl apply or helm upgrade.
+
+GitOps: Git is the single source of truth for cluster state. An agent inside the cluster (ArgoCD, Flux) continuously syncs the cluster to match what's in Git. The pipeline only updates Git — it never touches the cluster directly.
+
+Benefits:
+
+Auditability — every change is a Git commit with author and message
+Rollback = git revert — clean and instant
+No cluster credentials in CI/CD pipeline
+Drift detection — ArgoCD alerts if someone manually changes the cluster
+7. How does ArgoCD work?
+ArgoCD runs inside the Kubernetes cluster and watches a Git repository. It compares the desired state (Kubernetes manifests in Git) with the actual state (what's running in the cluster) and syncs them.
+
+Key concepts:
+
+Application: An ArgoCD resource that maps a Git repo path to a cluster namespace
+Sync: Apply Git state to the cluster
+Refresh: Re-fetch from Git to check for changes
+Health status: ArgoCD checks if deployed resources are actually healthy (not just created)
+Auto-sync vs manual:
+
+Auto-sync: ArgoCD automatically applies changes within minutes of a Git commit
+Manual: Changes are detected but a human (or pipeline) must trigger the sync
+Production typically uses manual sync with auto-sync for staging
+8. How do you implement a canary deployment with ArgoCD?
+Use Argo Rollouts (a separate controller that extends ArgoCD):
+
+spec:
+  strategy:
+    canary:
+      steps:
+      - setWeight: 5        # 5% traffic to new version
+      - pause: {duration: 10m}
+      - setWeight: 25
+      - pause: {duration: 10m}
+      - setWeight: 100
+      analysis:
+        templates:
+        - templateName: error-rate
+        args:
+        - name: service-name
+          value: my-service
+The analysis template checks Prometheus metrics (error rate, latency). If SLO is breached at any step, Argo Rollouts automatically rolls back to the previous version.
