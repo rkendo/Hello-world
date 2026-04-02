@@ -1,0 +1,31 @@
+erraform & Infrastructure
+
+Do you have experience in creating infrastructure with Terraform?
+What are the services you created using Terraform?
+May I know what is a Terraform state file?
+Where do you store the Terraform state file?
+What is provider.tf?
+What is variable.tf?
+Suppose while executing terraform plan it shows that some resources are being deleted — what will be your next plan of action?
+
+AWS & Networking
+
+What is an application gateway and load balancer?
+Suppose you have deployed a web application on an EC2 instance inside a VPC. The instance is running and health checks are passing, but users are unable to access the application from the internet. What will you do?
+In that case, what components in the VPC would you verify?
+Suppose an EC2 instance is showing high CPU utilization (above 90%) in CloudWatch. How will you identify the root cause?
+
+CI/CD & Project Responsibilities
+
+What were your roles and responsibilities in your previous project?
+Were you responsible for creating the CI/CD pipeline in that project?
+Can you explain the pipeline flow and the different stages you had in the pipeline?
+What security measures did you take in the pipeline?
+How was the branching strategy in your project?
+
+Docker & Kubernetes
+
+Can you explain multi-stage Docker?
+How do you push the image to ECR?
+Have you ever come across a crash-loop back-off error? How did you debug it?
+What is HPA (Horizontal Pod Autoscaler) and how is it useful?
